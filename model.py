@@ -97,7 +97,6 @@ def pad_2d(images, pad):
     if pad == 0:
         return images
 
-    # pad_width quy định số lượng phần tử đệm cho từng chiều (before, after):
     # - Dim 0 (N): không đệm (0, 0)
     # - Dim 1 (C): không đệm (0, 0)
     # - Dim 2 (H): đệm pad giá trị trên và dưới (pad, pad)
