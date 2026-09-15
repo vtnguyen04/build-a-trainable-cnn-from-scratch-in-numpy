@@ -421,8 +421,20 @@ def relu_forward(x: np.ndarray) -> tuple[np.ndarray, dict]:
     cache = {"x": x}
     return out, cache
 
-# Step 26 - relu_backward (not yet solved)
-# TODO: implement
+# Step 26 - relu_backward
+def relu_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Propagate upstream gradients through ReLU only where input was strictly positive.
+
+    Args:
+        d_out: Upstream gradient array of same shape as cached x.
+        cache: Dict from relu_forward containing original input under 'x'.
+
+    Returns:
+        dx: Gradient array matching shape and dtype of d_out.
+    """
+    x = cache["x"]
+    dx = np.where(x > 0, d_out, 0)
+    return dx
 
 # Step 27 - flatten_forward (not yet solved)
 # TODO: implement
