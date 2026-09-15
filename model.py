@@ -503,8 +503,26 @@ def linear_grad_input(d_out: np.ndarray, cache: dict) -> np.ndarray:
     weights = cache["weights"]
     return d_out @ weights.T
 
-# Step 31 - linear_grad_weights (not yet solved)
-# TODO: implement
+# Step 31 - linear_grad_weights
+def linear_grad_weights(x: np.ndarray, dout: np.ndarray = None) -> np.ndarray:
+    """Compute the gradient of the loss with respect to weights W (dW).
+
+    Supports calling as linear_grad_weights(x, dout) or linear_grad_weights(dout, cache).
+
+    Args:
+        x: Input matrix of shape (N, D_in) OR upstream gradient d_out if called
+            with cache.
+        dout: Upstream gradient of shape (N, D_out) OR cache dict.
+
+    Returns:
+        dW: Gradient tensor w.r.t weights of shape (D_in, D_out).
+    """
+    if isinstance(dout, dict):
+        d_out, cache = x, dout
+        x = cache["x"]
+        return x.T @ d_out
+
+    return x.T @ dout
 
 # Step 32 - linear_grad_bias (not yet solved)
 # TODO: implement
