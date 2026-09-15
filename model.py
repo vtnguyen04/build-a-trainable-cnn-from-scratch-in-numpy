@@ -466,11 +466,42 @@ def flatten_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
     x_shape = cache["x_shape"]
     return d_out.reshape(x_shape)
 
-# Step 29 - linear_forward (not yet solved)
-# TODO: implement
+# Step 29 - linear_forward
+def linear_forward(
+    x: np.ndarray, weights: np.ndarray, bias: np.ndarray
+) -> tuple[np.ndarray, dict]:
+    """Affine forward pass: Y = X @ W + b.
 
-# Step 30 - linear_grad_input (not yet solved)
-# TODO: implement
+    Args:
+        x: Input batch matrix of shape (N, D_in).
+        weights: Weight matrix of shape (D_in, D_out).
+        bias: Bias vector of shape (D_out,).
+
+    Returns:
+        out: Output activations of shape (N, D_out).
+        cache: Dictionary containing 'x', 'weights', and 'bias'.
+    """
+    out = x @ weights + bias
+    cache = {
+        "x": x,
+        "weights": weights,
+        "bias": bias,
+    }
+    return out, cache
+
+# Step 30 - linear_grad_input
+def linear_grad_input(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Compute the gradient of the loss with respect to input X (dX).
+
+    Args:
+        d_out: Upstream gradient of shape (N, D_out).
+        cache: Dictionary containing 'weights' of shape (D_in, D_out).
+
+    Returns:
+        dx: Gradient tensor w.r.t input of shape (N, D_in).
+    """
+    weights = cache["weights"]
+    return d_out @ weights.T
 
 # Step 31 - linear_grad_weights (not yet solved)
 # TODO: implement
