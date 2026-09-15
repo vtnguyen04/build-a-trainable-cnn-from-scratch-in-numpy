@@ -111,8 +111,40 @@ def output_spatial_size(input_size, kernel, stride, padding):
     
     return (input_size + 2 * padding - kernel) // stride + 1
 
-# Step 15 - im2col (not yet solved)
-# TODO: implement
+# Step 15 - im2col
+import numpy as np
+
+
+def im2col(
+    images: np.ndarray,
+    kernel_h: int,
+    kernel_w: int,
+    stride: int,
+    padding: int,
+) -> np.ndarray:
+    """Vectorized im2col (0 loop) matching the test suite format: each patch is a row.
+
+    Reuses output_spatial_size and pad_2d.
+    """
+    N, C, H, W = images.shape
+
+    out_h = output_spatial_size(H, kernel_h, stride, padding)
+    out_w = output_spatial_size(W, kernel_w, stride, padding)
+    images_padded = np.ascontiguousarray(pad_2d(images, padding))
+
+    sN, sC, sH, sW = images_padded.strides
+
+    shape = (N, out_h, out_w, C, kernel_h, kernel_w)
+    strides = (sN, stride * sH, stride * sW, sC, sH, sW)
+
+    patches = np.lib.stride_tricks.as_strided(
+        images_padded, shape=shape, strides=strides
+    )
+
+    num_patches = N * out_h * out_w
+    patch_dim = C * kernel_h * kernel_w
+
+    return np.ascontiguousarray(patches).reshape(num_patches, patch_dim)
 
 # Step 16 - col2im (not yet solved)
 # TODO: implement
