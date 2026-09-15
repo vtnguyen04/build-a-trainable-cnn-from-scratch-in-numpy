@@ -376,14 +376,14 @@ def scatter_grad_window(
 # Step 24 - maxpool2d_backward
 def maxpool2d_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
     """Scatter each d_out value to the cached argmax position in its window."""
-    x = cache["x"]
+    x_shape = cache["x_shape"]
+    argmax = cache["argmax"]
     kernel = cache["kernel"]
     stride = cache["stride"]
-    argmax = cache["argmax"]
 
-    N, C, H, W = x.shape
+    N, C, H, W = x_shape
     out_h, out_w = d_out.shape[2], d_out.shape[3]
-    dx = np.zeros_like(x, dtype=float)
+    dx = np.zeros(x_shape, dtype=float)
 
     for n in range(N):
         for c in range(C):
@@ -394,12 +394,12 @@ def maxpool2d_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
                     w_start = j * stride
                     w_end = w_start + kernel
 
+                    grad_val = d_out[n, c, i, j]
                     idx = argmax[n, c, i, j]
-                    val = d_out[n, c, i, j]
 
-                    dx[n, c, h_start:h_end, w_start:w_end] += scatter_grad_window(
-                        val, idx, kernel
-                    )
+                    grad_patch = scatter_grad_window(grad_val, idx, kernel)
+
+                    dx[n, c, h_start:h_end, w_start:w_end] += grad_patch
 
     return dx
 
