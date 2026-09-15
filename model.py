@@ -42,10 +42,10 @@ def stable_softmax(logits):
     # TODO: Compute a numerically stable softmax row-wise over (N, C) logits.
     max_row = row_max(logits)
 
-    exp_row = np.exp(logits - max_row)
-    exp_sum = row_sum(exp_row)
+    shifted = exp_shifted(logits)
+    exp_sum = row_sum(shifted)
 
-    return exp_row / exp_sum
+    return shifted / exp_sum
 
 # Step 6 - one_hot
 def one_hot(labels, num_classes):
