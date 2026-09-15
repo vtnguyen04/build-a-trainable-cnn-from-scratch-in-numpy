@@ -304,8 +304,10 @@ def conv2d_grad_weights(d_out: np.ndarray, cache: dict) -> np.ndarray:
 
     return dW_row.reshape(weights.shape)
 
-# Step 20 - conv2d_grad_bias (not yet solved)
-# TODO: implement
+# Step 20 - conv2d_grad_bias
+def conv2d_grad_bias(d_out: np.ndarray) -> np.ndarray:
+    """Return a length C_out gradient by reducing d_out over batch and spatial axes."""
+    return np.sum(d_out, axis=(0, 2, 3))
 
 # Step 21 - conv2d_backward (not yet solved)
 # TODO: implement
@@ -316,8 +318,35 @@ def conv2d_grad_weights(d_out: np.ndarray, cache: dict) -> np.ndarray:
 # Step 23 - scatter_grad_window (not yet solved)
 # TODO: implement
 
-# Step 24 - maxpool2d_backward (not yet solved)
-# TODO: implement
+# Step 24 - maxpool2d_backward
+def maxpool2d_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Scatter each d_out value to the cached argmax position in its window."""
+    x = cache["x"]
+    kernel = cache["kernel"]
+    stride = cache["stride"]
+    argmax = cache["argmax"]
+
+    N, C, H, W = x.shape
+    out_h, out_w = d_out.shape[2], d_out.shape[3]
+    dx = np.zeros_like(x, dtype=float)
+
+    for n in range(N):
+        for c in range(C):
+            for i in range(out_h):
+                h_start = i * stride
+                h_end = h_start + kernel
+                for j in range(out_w):
+                    w_start = j * stride
+                    w_end = w_start + kernel
+
+                    idx = argmax[n, c, i, j]
+                    val = d_out[n, c, i, j]
+
+                    dx[n, c, h_start:h_end, w_start:w_end] += scatter_grad_window(
+                        val, idx, kernel
+                    )
+
+    return dx
 
 # Step 25 - relu_forward (not yet solved)
 # TODO: implement
