@@ -319,11 +319,44 @@ def conv2d_backward(
     db = conv2d_grad_bias(d_out)
     return dx, dW, db
 
-# Step 22 - maxpool2d_forward (not yet solved)
-# TODO: implement
+# Step 22 - maxpool2d_forward
+def maxpool2d_forward(
+    x: np.ndarray, kernel: int, stride: int
+) -> tuple[np.ndarray, dict]:
+    """Run 2D max pooling and cache the in-window argmax of each output cell."""
+    N, C, H, W = x.shape
 
-# Step 23 - scatter_grad_window (not yet solved)
-# TODO: implement
+    out_h = output_spatial_size(H, kernel, stride, 0)
+    out_w = output_spatial_size(W, kernel, stride, 0)
+
+    out = np.zeros((N, C, out_h, out_w), dtype=x.dtype)
+    argmax = np.zeros((N, C, out_h, out_w), dtype=int)
+
+    for i in range(out_h):
+        h_start = i * stride
+        h_end = h_start + kernel
+        for j in range(out_w):
+            w_start = j * stride
+            w_end = w_start + kernel
+
+            window = x[:, :, h_start:h_end, w_start:w_end]
+            window_flat = window.reshape(N, C, -1)
+
+            out[:, :, i, j] = np.max(window_flat, axis=-1)
+            argmax[:, :, i, j] = np.argmax(window_flat, axis=-1)
+
+    cache = {"x": x, "kernel": kernel, "stride": stride, "argmax": argmax}
+
+    return out, cache
+
+# Step 23 - scatter_grad_window
+def scatter_grad_window(
+    grad_value: float, argmax_index: int, kernel: int
+) -> np.ndarray:
+    """Place grad_value at the argmax position within a (kernel, kernel) zero array."""
+    window = np.zeros((kernel, kernel), dtype=float)
+    window.flat[int(argmax_index)] = grad_value
+    return window
 
 # Step 24 - maxpool2d_backward
 def maxpool2d_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:

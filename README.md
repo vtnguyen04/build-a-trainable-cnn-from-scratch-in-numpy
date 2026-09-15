@@ -31,8 +31,8 @@ python scaffold.py
 - [x] **19.** conv2d_grad_weights
 - [x] **20.** conv2d_grad_bias
 - [x] **21.** conv2d_backward
-- [ ] **22.** maxpool2d_forward
-- [ ] **23.** scatter_grad_window
+- [x] **22.** maxpool2d_forward
+- [x] **23.** scatter_grad_window
 - [x] **24.** maxpool2d_backward
 - [ ] **25.** relu_forward
 - [ ] **26.** relu_backward
