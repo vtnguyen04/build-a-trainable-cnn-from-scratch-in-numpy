@@ -452,8 +452,19 @@ def flatten_forward(x: np.ndarray) -> tuple[np.ndarray, dict]:
     cache = {"x_shape": x.shape}
     return out, cache
 
-# Step 28 - flatten_backward (not yet solved)
-# TODO: implement
+# Step 28 - flatten_backward
+def flatten_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Route upstream 2D gradients back into the original 4D feature map shape.
+
+    Args:
+        d_out: Upstream gradient of shape (N, C * H * W).
+        cache: Dict containing original shape under 'x_shape'.
+
+    Returns:
+        dx: Gradient tensor reshaped to (N, C, H, W).
+    """
+    x_shape = cache["x_shape"]
+    return d_out.reshape(x_shape)
 
 # Step 29 - linear_forward (not yet solved)
 # TODO: implement
