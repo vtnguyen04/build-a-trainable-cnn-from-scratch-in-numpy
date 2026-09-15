@@ -323,7 +323,17 @@ def conv2d_backward(
 def maxpool2d_forward(
     x: np.ndarray, kernel: int, stride: int
 ) -> tuple[np.ndarray, dict]:
-    """Run 2D max pooling and cache the in-window argmax of each output cell."""
+    """Run 2D max pooling over a 4D tensor (N, C, H, W) with no padding.
+
+    Args:
+        x: Input tensor of shape (N, C, H, W).
+        kernel: Spatial size of the square pooling window.
+        stride: Stride step size between windows.
+
+    Returns:
+        out: Max-pooled tensor of shape (N, C, out_h, out_w).
+        cache: Dict containing 'x_shape', 'argmax', 'kernel', and 'stride'.
+    """
     N, C, H, W = x.shape
 
     out_h = output_spatial_size(H, kernel, stride, 0)
@@ -345,7 +355,12 @@ def maxpool2d_forward(
             out[:, :, i, j] = np.max(window_flat, axis=-1)
             argmax[:, :, i, j] = np.argmax(window_flat, axis=-1)
 
-    cache = {"x": x, "kernel": kernel, "stride": stride, "argmax": argmax}
+    cache = {
+        "x_shape": x.shape,
+        "argmax": argmax,
+        "kernel": kernel,
+        "stride": stride,
+    }
 
     return out, cache
 
