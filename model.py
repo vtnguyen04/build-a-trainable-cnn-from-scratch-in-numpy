@@ -535,8 +535,28 @@ def linear_grad_bias(dout: np.ndarray) -> np.ndarray:
     """
     return np.sum(dout, axis=0)
 
-# Step 33 - linear_backward (not yet solved)
-# TODO: implement
+# Step 33 - linear_backward
+def linear_backward(
+    d_out: np.ndarray, cache: dict
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Perform the complete backward pass for a fully connected (linear) layer.
+
+    Args:
+        d_out: Upstream gradient of shape (N, D_out).
+        cache: Dictionary from linear_forward containing 'x', 'weights', and
+            'bias'.
+
+    Returns:
+        Tuple of (dx, dW, db):
+            - dx: Gradient w.r.t input X of shape (N, D_in).
+            - dW: Gradient w.r.t weights W of shape (D_in, D_out).
+            - db: Gradient w.r.t bias b of shape (D_out,).
+    """
+    dx = linear_grad_input(d_out, cache)
+    dW = linear_grad_weights(cache["x"], d_out)
+    db = linear_grad_bias(d_out)
+
+    return dx, dW, db
 
 # Step 34 - softmax_cross_entropy_forward (not yet solved)
 # TODO: implement
