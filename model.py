@@ -309,8 +309,15 @@ def conv2d_grad_bias(d_out: np.ndarray) -> np.ndarray:
     """Return a length C_out gradient by reducing d_out over batch and spatial axes."""
     return np.sum(d_out, axis=(0, 2, 3))
 
-# Step 21 - conv2d_backward (not yet solved)
-# TODO: implement
+# Step 21 - conv2d_backward
+def conv2d_backward(
+    d_out: np.ndarray, cache: dict
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return (dx, dW, db) using the conv2d gradient helpers and the forward cache."""
+    dx = conv2d_grad_input(d_out, cache)
+    dW = conv2d_grad_weights(d_out, cache)
+    db = conv2d_grad_bias(d_out)
+    return dx, dW, db
 
 # Step 22 - maxpool2d_forward (not yet solved)
 # TODO: implement
