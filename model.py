@@ -523,8 +523,17 @@ def linear_grad_weights(x: np.ndarray, dout: np.ndarray = None) -> np.ndarray:
 
     return x.T @ dout
 
-# Step 32 - linear_grad_bias (not yet solved)
-# TODO: implement
+# Step 32 - linear_grad_bias
+def linear_grad_bias(dout: np.ndarray) -> np.ndarray:
+    """Compute the gradient of the loss with respect to the bias vector b.
+
+    Args:
+        dout: Upstream gradient of shape (N, D_out).
+
+    Returns:
+        db: 1D gradient array of shape (D_out,).
+    """
+    return np.sum(dout, axis=0)
 
 # Step 33 - linear_backward (not yet solved)
 # TODO: implement
