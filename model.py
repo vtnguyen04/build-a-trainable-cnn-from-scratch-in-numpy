@@ -239,8 +239,37 @@ def conv2d_forward(
 
     return out, cache
 
-# Step 18 - conv2d_grad_input (not yet solved)
-# TODO: implement
+# Step 18 - conv2d_grad_input
+def conv2d_grad_input(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Backpropagate output gradients through convolution to compute gradient w.r.t input (dx).
+
+    Reuses col2im.
+
+    Args:
+        d_out: Upstream gradient tensor of shape (N, C_out, out_h, out_w).
+        cache: Dictionary from conv2d_forward containing: 'x', 'weights',
+            'stride', 'padding', 'kernel_h', 'kernel_w'.
+
+    Returns:
+        dx: Gradient tensor w.r.t input x, shape (N, C_in, H, W).
+    """
+    x = cache["x"]
+    weights = cache["weights"]
+    stride = cache["stride"]
+    padding = cache["padding"]
+    kernel_h = cache["kernel_h"]
+    kernel_w = cache["kernel_w"]
+
+    C_out = weights.shape[0]
+    d_out_flat = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
+
+    w_row = weights.reshape(C_out, -1)
+
+    d_cols = d_out_flat @ w_row
+
+    dx = col2im(d_cols, x.shape, kernel_h, kernel_w, stride, padding)
+
+    return dx
 
 # Step 19 - conv2d_grad_weights (not yet solved)
 # TODO: implement
