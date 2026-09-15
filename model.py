@@ -184,8 +184,60 @@ def col2im(
 
     return images_padded[:, :, padding : padding + H, padding : padding + W]
 
-# Step 17 - conv2d_forward (not yet solved)
-# TODO: implement
+# Step 17 - conv2d_forward
+import numpy as np
+
+
+def conv2d_forward(
+    x: np.ndarray,
+    weights: np.ndarray,
+    bias: np.ndarray,
+    stride: int,
+    padding: int,
+) -> tuple[np.ndarray, tuple]:
+    """Forward pass for a 2D convolution layer using im2col (row-patch convention).
+
+    Args:
+        x: Input tensor of shape (N, C_in, H, W).
+        weights: Filter weights of shape (C_out, C_in, kernel_h, kernel_w).
+        bias: Bias vector of shape (C_out,).
+        stride: Stride step size.
+        padding: Zero-padding size on each spatial side.
+
+    Returns:
+        Tuple of (out, cache) where:
+            - out: Output tensor of shape (N, C_out, out_h, out_w).
+            - cache: Tuple containing (x, weights, bias, stride, padding, x_cols)
+            for backward pass.
+    """
+    N, C_in, H, W = x.shape
+    C_out, _, kernel_h, kernel_w = weights.shape
+
+    out_h = output_spatial_size(H, kernel_h, stride, padding)
+    out_w = output_spatial_size(W, kernel_w, stride, padding)
+
+    x_cols = im2col(x, kernel_h, kernel_w, stride, padding)
+
+    w_row = weights.reshape(C_out, -1)
+
+    out = x_cols @ w_row.T
+    if bias is not None:
+        out += bias
+
+    out = out.reshape(N, out_h, out_w, C_out).transpose(0, 3, 1, 2)
+
+    cache = {
+        "x": x,
+        "weights": weights,
+        "bias": bias,
+        "stride": stride,
+        "padding": padding,
+        "kernel_h": kernel_h,
+        "kernel_w": kernel_w,
+        "cols": x_cols,
+    }
+
+    return out, cache
 
 # Step 18 - conv2d_grad_input (not yet solved)
 # TODO: implement
