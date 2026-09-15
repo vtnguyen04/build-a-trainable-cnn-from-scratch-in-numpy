@@ -485,7 +485,6 @@ def linear_forward(
     cache = {
         "x": x,
         "weights": weights,
-        "bias": bias,
     }
     return out, cache
 
