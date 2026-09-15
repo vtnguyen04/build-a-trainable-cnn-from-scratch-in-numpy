@@ -403,8 +403,23 @@ def maxpool2d_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
 
     return dx
 
-# Step 25 - relu_forward (not yet solved)
-# TODO: implement
+# Step 25 - relu_forward
+import numpy as np
+
+
+def relu_forward(x: np.ndarray) -> tuple[np.ndarray, dict]:
+    """Apply elementwise Rectified Linear Unit (ReLU) to input x of any shape.
+
+    Args:
+        x: Input array of any shape.
+
+    Returns:
+        out: Array of same shape and dtype as x with max(0, x).
+        cache: Dict with key 'x' storing the original pre-activation.
+    """
+    out = np.maximum(0, x)
+    cache = {"x": x}
+    return out, cache
 
 # Step 26 - relu_backward (not yet solved)
 # TODO: implement
