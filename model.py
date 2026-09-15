@@ -436,8 +436,21 @@ def relu_backward(d_out: np.ndarray, cache: dict) -> np.ndarray:
     dx = np.where(x > 0, d_out, 0)
     return dx
 
-# Step 27 - flatten_forward (not yet solved)
-# TODO: implement
+# Step 27 - flatten_forward
+def flatten_forward(x: np.ndarray) -> tuple[np.ndarray, dict]:
+    """Reshape a 4D feature map (N, C, H, W) into a 2D batch matrix (N, C*H*W).
+
+    Args:
+        x: Input tensor of shape (N, C, H, W).
+
+    Returns:
+        out: Reshaped array of shape (N, C * H * W).
+        cache: Dict with key 'x_shape' storing x.shape.
+    """
+    N = x.shape[0]
+    out = x.reshape(N, -1)
+    cache = {"x_shape": x.shape}
+    return out, cache
 
 # Step 28 - flatten_backward (not yet solved)
 # TODO: implement
