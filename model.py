@@ -91,8 +91,20 @@ def init_zero_bias(length):
     # TODO: return a 1D float array of zeros with the given length.
     return np.zeros(length)
 
-# Step 13 - pad_2d (not yet solved)
-# TODO: implement
+# Step 13 - pad_2d
+def pad_2d(images, pad):
+    # TODO: zero-pad the spatial (H, W) dims of a 4D (N, C, H, W) tensor by `pad` on each side.
+    if pad == 0:
+        return images
+
+    # pad_width quy định số lượng phần tử đệm cho từng chiều (before, after):
+    # - Dim 0 (N): không đệm (0, 0)
+    # - Dim 1 (C): không đệm (0, 0)
+    # - Dim 2 (H): đệm pad giá trị trên và dưới (pad, pad)
+    # - Dim 3 (W): đệm pad giá trị trái và phải (pad, pad)
+    pad_width = ((0, 0), (0, 0), (pad, pad), (pad, pad))
+
+    return np.pad(images, pad_width, mode="constant", constant_values=0)
 
 # Step 14 - output_spatial_size (not yet solved)
 # TODO: implement
