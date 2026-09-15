@@ -146,8 +146,43 @@ def im2col(
 
     return np.ascontiguousarray(patches).reshape(num_patches, patch_dim)
 
-# Step 16 - col2im (not yet solved)
-# TODO: implement
+# Step 16 - col2im
+import numpy as np
+
+
+def col2im(
+    cols: np.ndarray,
+    input_shape: tuple,
+    kernel_h: int,
+    kernel_w: int,
+    stride: int,
+    padding: int,
+) -> np.ndarray:
+    """Re-roll a (N*out_h*out_w, C*kh*kw) column matrix back into a (N, C, H, W) tensor.
+
+    Reuses output_spatial_size.
+    """
+    N, C, H, W = input_shape
+
+    out_h = output_spatial_size(H, kernel_h, stride, padding)
+    out_w = output_spatial_size(W, kernel_w, stride, padding)
+
+    cols_reshaped = cols.reshape(N, out_h, out_w, C, kernel_h, kernel_w)
+
+    H_pad = H + 2 * padding
+    W_pad = W + 2 * padding
+    images_padded = np.zeros((N, C, H_pad, W_pad), dtype=cols.dtype)
+
+    for kh in range(kernel_h):
+        h_end = kh + out_h * stride
+        for kw in range(kernel_w):
+            w_end = kw + out_w * stride
+
+            patch_slice = cols_reshaped[:, :, :, :, kh, kw].transpose(0, 3, 1, 2)
+
+            images_padded[:, :, kh:h_end:stride, kw:w_end:stride] += patch_slice
+
+    return images_padded[:, :, padding : padding + H, padding : padding + W]
 
 # Step 17 - conv2d_forward (not yet solved)
 # TODO: implement
