@@ -271,8 +271,38 @@ def conv2d_grad_input(d_out: np.ndarray, cache: dict) -> np.ndarray:
 
     return dx
 
-# Step 19 - conv2d_grad_weights (not yet solved)
-# TODO: implement
+# Step 19 - conv2d_grad_weights
+def conv2d_grad_weights(d_out: np.ndarray, cache: dict) -> np.ndarray:
+    """Compute gradient of loss w.r.t weights (dW) using im2col cache.
+
+    Args:
+        d_out: Upstream gradient tensor of shape (N, C_out, out_h, out_w).
+        cache: Dictionary from conv2d_forward containing: 'weights', 'cols' (or
+            'x', 'stride', 'padding', 'kernel_h', 'kernel_w').
+
+    Returns:
+        dW: Gradient tensor w.r.t weights, shape (C_out, C_in, kernel_h,
+        kernel_w).
+    """
+    weights = cache["weights"]
+    C_out = weights.shape[0]
+
+    if "cols" in cache:
+        cols = cache["cols"]
+    else:
+        cols = im2col(
+            cache["x"],
+            cache["kernel_h"],
+            cache["kernel_w"],
+            cache["stride"],
+            cache["padding"],
+        )
+
+    d_out_flat = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
+
+    dW_row = d_out_flat.T @ cols
+
+    return dW_row.reshape(weights.shape)
 
 # Step 20 - conv2d_grad_bias (not yet solved)
 # TODO: implement
